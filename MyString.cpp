@@ -94,5 +94,32 @@ const char& String::operator[](size_t index) const
 	return data_[index];
 }
 
+String::iterator String::begin() { return data_; }
+String::const_iterator String::begin() const { return data_; }
+String::const_iterator String::cbegin() const { return data_; }
+String::iterator String::end() { return data_ + strlen(data_); }
+String::const_iterator String::end() const { return data_ + strlen(data_); }
+String::const_iterator String::cend() const { return data_ + strlen(data_); }
+
+String::reverse_iterator String::rbegin() { return data_ + strlen(data_) - 1; }
+String::const_reverse_iterator String::rbegin() const { return data_ + strlen(data_) - 1; }
+String::const_reverse_iterator String::crbegin() const { return data_ + strlen(data_) - 1; }
+String::reverse_iterator String::rend() { return data_ - 1; }
+String::const_reverse_iterator String::rend() const { return data_ - 1; }
+String::const_reverse_iterator String::crend() const { return data_ - 1; }
+
+String::iterator String::find(const char c) const
+{
+	size_t length = strlen(data_);
+	for (size_t i = 0; i < length; ++i)
+	{
+		if (data_[i] == c)
+		{
+			return &data_[i];
+		}
+	}
+
+	return &data_[length];
+}
 
 } // namespace custom
