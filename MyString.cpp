@@ -23,6 +23,12 @@ String::String(const char* str)
 	::copy_str(data_, str, length + 1);
 }
 
+String::String(const char* str, size_t count)
+{
+	data_ = new char[count + 1];
+	::copy_str(data_, str, count + 1);
+}
+
 String::String(const String& other)
 {
 	size_t length = strlen(other.data_);
@@ -37,6 +43,11 @@ String::String(String&& other) noexcept
 	::copy_str(data_, other.data_, length + 1);
 	delete[] other.data_;
 	other.data_ = nullptr;
+}
+
+String::~String()
+{
+	delete[] data_;
 }
 
 String& String::operator=(const String& other)
@@ -69,9 +80,9 @@ String& String::operator=(String&& other) noexcept
 	return *this;
 }
 
-String::~String()
+size_t String::size() const
 {
-	delete[] data_;
+	return strlen(data_);
 }
 
 const char* String::c_str() const
@@ -79,9 +90,32 @@ const char* String::c_str() const
 	return data_;
 }
 
-size_t String::size() const
+String String::substr(size_t start, size_t count) const
 {
-	return strlen(data_);
+	if (count == 0)
+	{
+		return String();
+	}
+
+	return String(data_ + start, count);
+}
+
+void String::append(const char* str)
+{
+	if (str != nullptr)
+	{
+		size_t lengthOther = strlen(str);
+
+		if (lengthOther > 0)
+		{
+			size_t length = strlen(data_);
+			char* newdata = new char[length + lengthOther + 1];
+			copy_str(newdata, data_, length);
+			copy_str(newdata + length, str, lengthOther + 1);
+			delete[] data_;
+			data_ = newdata;
+		}
+	}
 }
 
 char& String::operator[](size_t index)
@@ -92,6 +126,39 @@ char& String::operator[](size_t index)
 const char& String::operator[](size_t index) const
 {
 	return data_[index];
+}
+
+String& String::operator+=(const String& other)
+{
+	size_t length = size();
+	size_t lengthOther = other.size();
+	if (lengthOther > 0)
+	{
+		char* newdata = new char[length + lengthOther + 1];
+		copy_str(newdata, data_, length);
+		copy_str(newdata + length, other.data_, lengthOther + 1);
+		delete[] data_;
+		data_ = newdata;
+	}
+
+	return *this;
+}
+
+String operator+(const String& lhs, const String& rhs)
+{
+	String newStr = lhs;
+	newStr += rhs;
+
+	return newStr;
+}
+
+std::ostream& operator<<(std::ostream& os, const String& str)
+{
+	for (char c : str) {
+		os << c;
+	}
+
+	return os;
 }
 
 String::iterator String::begin() { return data_; }

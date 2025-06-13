@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace custom
 {
 class String
@@ -16,8 +18,17 @@ public:
 	const char* c_str() const;
 	size_t size() const;
 
+	String substr(size_t start, size_t end) const;
+
+	void append(const char* str);
+
 	char& operator[](size_t index);
 	const char& operator[](size_t index) const;
+
+	String& operator+=(const String& other);
+	friend String operator+(const String& lhs, const String& rhs);
+
+	friend std::ostream& operator<<(std::ostream& os, const String& str);
 
 	using iterator = char*;
 	using const_iterator = const char*;
@@ -38,19 +49,12 @@ public:
 	const_reverse_iterator rend() const;
 	const_reverse_iterator crend() const;
 
-	//void operator+(const String& other);
-	//void append();
 	iterator find(const char c) const;
-	//String substr() const;
 
-	//Iterator begin();
-	//Iterator cbegin() const;
-	//Iterator end();
-	//Iterator cend() const;
-
-	//void reserve();
 
 private:
+	String(const char* str, size_t count);
+
 	char* data_;
 };
 
